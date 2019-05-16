@@ -16,13 +16,13 @@ M140 S60 ; set bed temp
 M190 S60 ; wait for bed temp
 M109 S215 ; wait for extruder temp
 G28 W ; home all without mesh bed level
-G80 ; mesh bed leveling
-G1 Y-3.0 F1000.0 ; go outside print area
-G92 E0.0
-G1 X60.0 E9.0  F1000.0 ; intro line
-M73 Q2 S2
-M73 P2 R2
-G1 X100.0 E12.5  F1000.0 ; intro line
+; G80 ; mesh bed leveling
+; G1 Y-3.0 F1000.0 ; go outside print area
+; G92 E0.0
+; G1 X60.0 E9.0  F1000.0 ; intro line
+; M73 Q2 S2
+; M73 P2 R2
+; G1 X100.0 E12.5  F1000.0 ; intro line
 G92 E0.0
 M221 S95
 M900 K30; Filament gcode
@@ -47,14 +47,40 @@ M204 S1000
 G1 F1200
 
 ; Start square, starting at the XY point
-; We are moving 5mm, so extrude 5mm times ratio of post-extruded filament
+; We are moving 20mm, so extrude 20mm times ratio of post-extruded filament
 ; (0.4mm) over pre-extruded filament (1.75) 
-G1 X122.240 Y97.979 E1.1428
-G1 X122.240 Y102.979 E1.1428
-G1 X117.240 Y102.979 E1.1428
-G1 X117.240 Y97.979 E1.1428
+G1 X137.240 Y97.979 E4.5714
+G1 X137.240 Y127.979 E4.5714
+G1 X117.240 Y127.979 E4.5714
+G1 X117.240 Y97.979 E4.5714
 
-G1 Z0.200
+G0 Z0.200
+
+G1 X137.240 Y97.979 E4.5714
+G1 X137.240 Y127.979 E4.5714
+G1 X117.240 Y127.979 E4.5714
+G1 X117.240 Y97.979 E4.5714
+
+G0 Z0.400
+
+G1 X137.240 Y97.979 E4.5714
+G1 X137.240 Y127.979 E4.5714
+G1 X117.240 Y127.979 E4.5714
+G1 X117.240 Y97.979 E4.5714
+
+G0 Z0.600
+
+G1 X137.240 Y97.979 E4.5714
+G1 X137.240 Y127.979 E4.5714
+G1 X117.240 Y127.979 E4.5714
+G1 X117.240 Y97.979 E4.5714
+
+G0 Z0.800
+
+G1 X137.240 Y97.979 E4.5714
+G1 X137.240 Y127.979 E4.5714
+G1 X117.240 Y127.979 E4.5714
+G1 X117.240 Y97.979 E4.5714
 
 ; POSTAMBLE (copied)
 M107
