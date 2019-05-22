@@ -30,9 +30,6 @@
 
 ; Primitives
 
-(define (base-line from-point to-point z)
-  (42))
-
 (define (vertical from-height)
   (string-append
     "G1 Z"(number->string (+ from-height TRI-HEIGHT))
@@ -43,6 +40,13 @@
   (string-append
     "G1 X" (number->string to-x)
     " Y" (number->string to-y)
-    " Z" (number->string to-z)
-    " E" (number->string (+ (- from-z TRI-HEIGHT) LAYER-HEIGHT))
+    " Z" (number->string (+ (- from-z TRI-HEIGHT) LAYER-HEIGHT))
+    " E" (number->string HYP-EXT-RATE)
+    " F" (number->string FEED-FAST)))
+
+(define (bridge to-x to-y)
+  (string-append
+    "G1 X" (number->string to-x)
+    " Y" (number->string to-y)
+    " E" (number->string BRIDGE-EXT-RATE)
     " F" (number->string FEED-FAST)))
