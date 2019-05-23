@@ -1,4 +1,3 @@
-
 ; PREAMBLE (copied)
 
 M73 P0 R2
@@ -22,8 +21,6 @@ G92 E0.0
 G1 X60.0 E9.0  F1000.0 ; intro line
 M73 Q2 S2
 M73 P2 R2
-G1 X100.0 E12.5  F1000.0 ; intro line
-G92 E0.0
 M221 S95
 M900 K30; Filament gcode
 G21 ; set units to millimeters
