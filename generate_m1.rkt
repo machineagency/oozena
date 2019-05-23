@@ -93,7 +93,7 @@
       "G1 X" (number->string (get-x to-point))
       " Y" (number->string (get-y to-point))
       " E" (number->string BRIDGE-EXT-RATE)
-      " F" (number->string FEED-FAST))))
+      " F" (number->string FEED-FAST) NL)))
 
 (define (row shape-proc origin vector times)
   (define (helper curr-origin vector times-left string)
