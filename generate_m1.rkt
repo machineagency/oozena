@@ -80,14 +80,14 @@
 
 ; Features (should have same signature)
 
-(define (triangle origin vector base-height)
+(define (triangle origin vector)
   (string-append
     (extrude-bead) NL
-    (vertical base-height) NL
+    (vertical (get-z origin)) NL
     (wait) NL
     (hyp (transl-point origin vector)) NL))
 
-(define (bridge origin vector base-height)
+(define (bridge origin vector)
   (let ([to-point (transl-point origin vector)])
     (string-append
       "G1 X" (number->string (get-x to-point))
@@ -102,7 +102,8 @@
         ([new-origin (transl-point curr-origin vector)]
          [new-times-left (- times-left 1)]
          [base-height (get-z curr-origin)]
-         [shape-string (shape-proc curr-origin vector base-height)]
-         [new-string (string-append string shape-string)])
-        (helper new-origin vector new-times-left new-string))))
-  (helper origin (normalize vector) times ""))
+         [shape-string (shape-proc curr-origin vector)]
+         [new-string (string-append string shape-string)]
+         [scaled-vector (mul-vector (normalize vector) TRI-LENGTH)])
+        (helper new-origin scaled-vector new-times-left new-string))))
+  (helper origin vector times ""))
