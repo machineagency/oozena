@@ -107,3 +107,10 @@
          [new-string (string-append string shape-string)])
         (helper new-origin scaled-vector new-times-left new-string))))
   (helper origin vector times ""))
+
+; Util
+
+(define (write-file filename text)
+  (let ([fd (open-output-file filename)])
+    (write text fd)
+    (close-output-port fd)))
