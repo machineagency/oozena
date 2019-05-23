@@ -70,7 +70,7 @@
     (list x y z)))
 
 (define (mul-vector vector scalar)
-  (map (lambda (el) (+ el scalar)) vector))
+  (map (lambda (el) (* el scalar)) vector))
 
 (define (normalize vector)
   (let*
