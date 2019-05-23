@@ -116,3 +116,14 @@
   (let ([fd (open-output-file filename #:exists 'replace)])
     (display text fd)
     (close-output-port fd)))
+
+; Program!
+
+(define instructions
+  (string-append
+    (row bridge '(0 0 0) '(1 0 0) 3)
+    (row bridge '(30 0 0) '(0 1 0) 3)
+    (row bridge '(30 30 0) '(-1 0 0) 3)
+    (row bridge '(0 30 0) '(0 -1 0) 3)))
+
+(write-file "generated.gcode" instructions)
