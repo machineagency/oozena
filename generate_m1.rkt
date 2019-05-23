@@ -99,11 +99,11 @@
   (define (helper curr-origin vector times-left string)
     (if (eq? times-left 0) string
       (let*
-        ([new-origin (transl-point curr-origin vector)]
+        ([scaled-vector (mul-vector (normalize vector) TRI-LENGTH)]
+         [new-origin (transl-point curr-origin scaled-vector)]
          [new-times-left (- times-left 1)]
          [base-height (get-z curr-origin)]
-         [shape-string (shape-proc curr-origin vector)]
-         [new-string (string-append string shape-string)]
-         [scaled-vector (mul-vector (normalize vector) TRI-LENGTH)])
+         [shape-string (shape-proc curr-origin scaled-vector)]
+         [new-string (string-append string shape-string)])
         (helper new-origin scaled-vector new-times-left new-string))))
   (helper origin vector times ""))
