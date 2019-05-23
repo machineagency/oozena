@@ -65,8 +65,14 @@
     [z (+ (get-z origin) (get-z vector))])
     (list x y z)))
 
-(def (mul-vector vector scalar)
+(define (mul-vector vector scalar)
   (map (lambda (el) (+ el scalar)) vector))
+
+(define (normalize vector)
+  (let*
+    ([squares (map (lambda (el) (* el el)) vector)]
+     [norm (foldl + 0 squares)])
+   (map (lambda (el) (/ el (sqrt norm))) vector)))
 
 ; to-do normalize vector to be base width
 (define (triangle origin vector base-height)
@@ -91,4 +97,4 @@
          [tri-string (triangle curr-origin vector base-height)]
          [new-string (string-append string tri-string)])
         (helper new-origin vector new-times-left new-string))))
-  (helper origin vector times ""))
+  (helper origin (normalize vector) times ""))
