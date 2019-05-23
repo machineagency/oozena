@@ -90,6 +90,8 @@
 (define (bridge origin vector)
   (let ([to-point (transl-point origin vector)])
     (string-append
+     (wait) NL
+     (extrude-bead) NL
       "G1 X" (number->string (get-x to-point))
       " Y" (number->string (get-y to-point))
       " E" (number->string BRIDGE-EXT-RATE)
@@ -111,6 +113,6 @@
 ; Util
 
 (define (write-file filename text)
-  (let ([fd (open-output-file filename)])
-    (write text fd)
+  (let ([fd (open-output-file filename #:exists 'replace)])
+    (display text fd)
     (close-output-port fd)))
