@@ -23,8 +23,19 @@
 (define (fan-on)
   ("M106 S255"))
 
-(define (move-xy x y)
-  (string-append "G1 X" (number->string x) " Y" (number->string y)))
+; use -1 for no movement on a particular axis
+(define (move-to point)
+  (let*
+    ([x-raw (get-x point)]
+     [y-raw (get-y point)]
+     [z-raw (get-z point)]
+     [x-str (if (< 0 x-raw) "" (string-append
+                                "X" (number->string x-raw) " "))]
+     [y-str (if (< 0 y-raw) "" (string-append
+                                "Y" (number->string y-raw) " "))]
+     [z-str (if (< 0 z-raw) "" (string-append
+                                "Z" (number->string z-raw) " "))])
+  (string-append "G1" x-str y-str z-str)))
 
 (define (extrude-bead)
   "G1 E0.2")
@@ -43,19 +54,12 @@
     " E" (number->string V-EXT-RATE)
     " F" (number->string FEED-SLOW)))
 
-(define (hyp from-z to-x to-y)
+(define (hyp to-point)
   (string-append
-    "G1 X" (number->string to-x)
-    " Y" (number->string to-y)
-    " Z" (number->string (+ (- from-z TRI-HEIGHT) LAYER-HEIGHT))
+    "G1 X" (number->string (get-x to-point))
+    " Y" (number->string (get-y to-point))
+    " Z" (number->string (get-z to-point))
     " E" (number->string HYP-EXT-RATE)
-    " F" (number->string FEED-FAST)))
-
-(define (bridge to-x to-y)
-  (string-append
-    "G1 X" (number->string to-x)
-    " Y" (number->string to-y)
-    " E" (number->string BRIDGE-EXT-RATE)
     " F" (number->string FEED-FAST)))
 
 (define (transl-point origin vector)
@@ -74,27 +78,31 @@
      [norm (foldl + 0 squares)])
    (map (lambda (el) (/ el (sqrt norm))) vector)))
 
-; to-do normalize vector to be base width
+; Features (should have same signature)
+
 (define (triangle origin vector base-height)
   (string-append
     (extrude-bead) NL
     (vertical base-height) NL
     (wait) NL
-    (let
-      ([from-z (+ base-height TRI-HEIGHT)]
-       [to-x (get-x (transl-point origin vector))]
-       [to-y (get-y (transl-point origin vector))])
-      (hyp from-z to-x to-y)) NL))
+    (hyp (transl-point origin vector)) NL))
 
-; Features
-(define (row-triangles origin vector times)
+(define (bridge origin vector base-height)
+  (let ([to-point (transl-point origin vector)])
+    (string-append
+      "G1 X" (number->string (get-x to-point))
+      " Y" (number->string (get-y to-point))
+      " E" (number->string BRIDGE-EXT-RATE)
+      " F" (number->string FEED-FAST))))
+
+(define (row shape-proc origin vector times)
   (define (helper curr-origin vector times-left string)
     (if (eq? times-left 0) string
       (let*
         ([new-origin (transl-point curr-origin vector)]
          [new-times-left (- times-left 1)]
          [base-height (get-z curr-origin)]
-         [tri-string (triangle curr-origin vector base-height)]
-         [new-string (string-append string tri-string)])
+         [shape-string (shape-proc curr-origin vector base-height)]
+         [new-string (string-append string shape-string)])
         (helper new-origin vector new-times-left new-string))))
   (helper origin (normalize vector) times ""))
