@@ -10,6 +10,7 @@
 (define V-EXT-RATE 0.35)
 (define HYP-EXT-RATE 1.5)
 (define BRIDGE-EXT-RATE 1.5)
+(define BRIM-EXT-RATE 0.65)
 (define LAYER-HEIGHT 0.2)
 (define WAIT-MSEC 2000)
 (define NL "\n")
@@ -21,7 +22,7 @@
 ; GCode Wrappers
 
 (define (fan-on)
-  ("M106 S255"))
+  "M106 S255\n")
 
 ; use -1 for no movement on a particular axis
 (define (move-to point)
@@ -97,6 +98,14 @@
       " E" (number->string BRIDGE-EXT-RATE)
       " F" (number->string FEED-FAST) NL)))
 
+(define (brim origin vector)
+  (let ([to-point (transl-point origin vector)])
+    (string-append
+      "G1 X" (number->string (get-x to-point))
+      " Y" (number->string (get-y to-point))
+      " E" (number->string BRIM-EXT-RATE)
+      " F" (number->string FEED-SLOW) NL)))
+
 (define (row shape-proc origin vector times)
   (define (helper curr-origin vector times-left string)
     (if (eq? times-left 0) string
@@ -119,11 +128,23 @@
 
 ; Program!
 
+; write more functions so i don't have to copy paste this
 (define instructions
   (string-append
-    (row bridge '(0 0 0) '(1 0 0) 3)
-    (row bridge '(30 0 0) '(0 1 0) 3)
-    (row bridge '(30 30 0) '(-1 0 0) 3)
-    (row bridge '(0 30 0) '(0 -1 0) 3)))
+    (fan-on)
+    (row bridge '(100 100 0) '(1 0 0) 1)
+    (row bridge '(110 100 0) '(0 1 0) 1)
+    (row bridge '(110 110 0) '(-1 0 0) 1)
+    (row bridge '(100 110 0) '(0 -1 0) 1)
+    (row triangle '(100 100 0) '(1 0 0) 1)
+    (row triangle '(110 100 0) '(0 1 0) 1)
+    (row triangle '(110 110 0) '(-1 0 0) 1)
+    (row triangle '(100 110 0) '(0 -1 0) 1)
+    (row bridge '(100 100 5) '(1 0 0) 1)
+    (row bridge '(110 100 5) '(0 1 0) 1)
+    (row bridge '(110 110 5) '(-1 0 0) 1)
+    (row bridge '(100 110 5) '(0 -1 0) 1)
+    ; then all of the above at a different z height
+    ))
 
 (write-file "generated.gcode" instructions)
